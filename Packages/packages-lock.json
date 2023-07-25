@@ -163,6 +163,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "io.colyseus.sdk": {
+      "version": "https://github.com/Luxor315/Colyseus_04.10.2022.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "4087dedd6e99c3b8a629f0c9d26e3da128c4ed82"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,
