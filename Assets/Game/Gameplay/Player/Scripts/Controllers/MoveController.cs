@@ -3,7 +3,7 @@ using UnityEngine;
 public class MoveController : MonoBehaviour
 {
     [SerializeField]
-    private Player _player;
+    private PlayerCharacter _player;
 
     private void Update()
     {
