@@ -45,7 +45,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
         state.players.ForEach((key, player) =>
         {
-            if (key == _room.SerializerId)
+            if (key == _room.SessionId)
                 CreatePlayer(player);
             else
                 CreateEnemy(key,player);
@@ -59,7 +59,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
         var position = new Vector3(player.x, 0f, player.y);
 
-       Instantiate(_player, position, Quaternion.identity, _parent);
+        Instantiate(_player, position, Quaternion.identity, _parent);
     }
 
     private void CreateEnemy(string key, Player player)
@@ -79,9 +79,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     protected override void OnDestroy()
     {
-        base.OnDestroy();
-                
-        _room.OnStateChange -= OnChange;        
+        base.OnDestroy();       
 
         _room.Leave();
     }
