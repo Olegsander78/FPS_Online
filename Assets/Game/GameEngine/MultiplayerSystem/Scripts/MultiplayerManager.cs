@@ -1,6 +1,4 @@
 using Colyseus;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,12 +11,17 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     private Transform _parent;
 
     [SerializeField]
-    private GameObject _enemy;
+    private EnemyMoveController _enemy;
 
     [SerializeField]
     private Transform _parentEnemy;
 
     private ColyseusRoom<State> _room;
+
+    public void SendMessage(string key, Dictionary<string,object> data)
+    {
+        _room.Send(key, data);
+    }
 
     protected override void Awake()
     {
@@ -38,29 +41,47 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     private void OnChange(State state, bool isFirstState)
     {
         if (!isFirstState)
-            return;
+            return;       
 
-        var player = state.players[_room.SessionId];
-        var position = new Vector3(player.x - 200, 0f, player.y - 200) / 8;
+        state.players.ForEach((key, player) =>
+        {
+            if (key == _room.SerializerId)
+                CreatePlayer(player);
+            else
+                CreateEnemy(key,player);
+        });
 
-        Instantiate(_player, position, Quaternion.identity, _parent);
-
-        state.players.ForEach(ForEachEnemy);
+        _room.State.players.OnAdd += CreateEnemy;
+        _room.State.players.OnRemove += RemoveEnemy;
     }
 
-    private void ForEachEnemy(string key, Player player)
+    private void CreatePlayer(Player player)
     {
-        if (key == _room.SerializerId)
-            return;
+        var position = new Vector3(player.x, 0f, player.y);
 
-        var position = new Vector3(player.x - 200, 0f, player.y - 200) / 8;
+       Instantiate(_player, position, Quaternion.identity, _parent);
+    }
 
-        Instantiate(_enemy, position, Quaternion.identity, _parentEnemy);
+    private void CreateEnemy(string key, Player player)
+    {
+        var position = new Vector3(player.x, 0f, player.y);
+
+        var enemy = Instantiate(_enemy, position, Quaternion.identity, _parentEnemy);
+
+        player.OnChange += enemy.OnChange;
+    }
+
+
+    private void RemoveEnemy(string key, Player player)
+    {
+
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
+                
+        _room.OnStateChange -= OnChange;        
 
         _room.Leave();
     }
