@@ -8,9 +8,7 @@ public class EnemyMoveController : MonoBehaviour
     private Vector3 _velocity;
 
     [SerializeField]
-    private float _interpolationTime = 0.1f;
-        
-    private float _interpolationTimer = 0f;
+    private float _interpolationTime = 0.07f;
 
     private Vector3 _smoothVelocity;
 
@@ -20,15 +18,15 @@ public class EnemyMoveController : MonoBehaviour
     }
 
 
-    //private void Update()
-    //{
-    //    transform.position = Vector3.SmoothDamp(transform.position, _lastPosition , ref _smoothVelocity, 0.1f);
-    //}
-
     private void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, _lastPosition + _velocity, Time.deltaTime);
+        transform.position = Vector3.SmoothDamp(transform.position, _lastPosition, ref _smoothVelocity, _interpolationTime);
     }
+
+    //private void Update()
+    //{
+    //    transform.position = Vector3.Lerp(transform.position, _lastPosition + _velocity, Time.deltaTime);
+    //}
 
     internal void OnChange(List<DataChange> changes)
     {
@@ -58,7 +56,5 @@ public class EnemyMoveController : MonoBehaviour
                     break;
             }
         }
-       
-        _interpolationTimer = _interpolationTime;
     }
 }
