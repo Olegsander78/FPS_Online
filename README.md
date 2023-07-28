@@ -1,2 +1,3 @@
 # Shooter_MP
- Multiplayer Unity. Lesson_1 
+ Multiplayer Unity. FPS
+Учебный проект с курса Eccentric games по мультиплееру.
