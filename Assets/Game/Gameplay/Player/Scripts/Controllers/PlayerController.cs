@@ -17,9 +17,14 @@ public class PlayerController : MonoBehaviour
         var mouseX = Input.GetAxis("Mouse X");
         var mouseY = Input.GetAxis("Mouse Y");
 
-        _player.SetInput(h, v);
+        var space = Input.GetKeyDown(KeyCode.Space);
+
+        _player.SetInput(h, v, mouseX * _mouseSensetivity);
 
         _player.RotateX(-mouseY * _mouseSensetivity);
+
+        if (space)
+            _player.Jump();
 
         SendMove();
     }
