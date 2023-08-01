@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public class PlayerCharacter : MonoBehaviour
+public class PlayerCharacter : Character
 {
     [SerializeField] 
     private Rigidbody _rigidbody;
 
     [SerializeField]
-    private float _speed = 2f;
+    private CheckFly _checkFly;
+
+    //[SerializeField]
+    //private float _speed = 2f;
 
     [SerializeField]
     private Transform _head;
@@ -21,11 +24,12 @@ public class PlayerCharacter : MonoBehaviour
     private float _minHeadAngle = -90f;
 
     [SerializeField]
-    private float _jumpForce = 50f;
+    private float _jumpForce = 5f;
 
-    private float _inputH, _inputV, _rotateY, _currentRotateX;
+    [SerializeField]
+    private float _jumpDelay = 0.2f;
 
-    private bool _isFly = true;
+    private float _inputH, _inputV, _rotateY, _currentRotateX, _jumpTime;
 
     private void Start()
     {
@@ -39,21 +43,6 @@ public class PlayerCharacter : MonoBehaviour
         Move();
         RotateY();
     }
-    private void OnCollisionStay(Collision collision)
-    {
-        var contactPoints = collision.contacts;
-        for (int i = 0; i < contactPoints.Length; i++)
-        {
-            if (contactPoints[i].normal.y > 0.45f)
-                _isFly = false;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        _isFly = true;
-    }
-
     public void RotateX(float value)
     {
         _currentRotateX = Mathf.Clamp(_currentRotateX + value, _minHeadAngle, _maxHeadAngle);
@@ -73,9 +62,17 @@ public class PlayerCharacter : MonoBehaviour
 
     public void Jump()
     {
-        if (_isFly)
+        if (_checkFly.IsFly)
             return;
 
+        if (Time.time - _jumpTime < _jumpDelay)
+        {
+            //Debug.Log($"Time = {Time.time}, JumpTime = {_jumpTime}, Time-jumptime = {Time.time - _jumpTime}");
+            return;
+        }
+
+        _jumpTime = Time.time;
+        //Debug.Log($"Time = {Time.time}, JumpTime = {_jumpTime}, Time-jumptime = {Time.time - _jumpTime}");
         _rigidbody.AddForce(0f, _jumpForce, 0f, ForceMode.VelocityChange);
     }
 
@@ -90,8 +87,9 @@ public class PlayerCharacter : MonoBehaviour
         //var direction = new Vector3(_inputH, 0f, _inputV).normalized;
         //transform.position += direction * Time.deltaTime * _speed;
 
-        var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * _speed;
+        var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * Speed;
         velocity.y = _rigidbody.velocity.y;
-        _rigidbody.velocity = velocity;
+        Velocity = velocity;
+        _rigidbody.velocity = Velocity;
     }
 }
