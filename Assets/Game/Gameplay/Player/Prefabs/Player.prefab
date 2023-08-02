@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 2553855307353289598}
   - component: {fileID: 3926916453333465492}
   m_Layer: 0
-  m_Name: Player_1
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,14 +159,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43b7f8e1179200a4cafe9b11eeb27032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Speed>k__BackingField: 2
+  <Speed>k__BackingField: 5
   _rigidbody: {fileID: 3926916453333465492}
   _checkFly: {fileID: 5550962331572671127}
   _head: {fileID: 720913227239896242}
   _cameraPoint: {fileID: 909249351845445631}
   _maxHeadAngle: 80
   _minHeadAngle: -80
-  _jumpForce: 10
+  _jumpForce: 7
   _jumpDelay: 0.2
 --- !u!114 &7220816372424605462
 MonoBehaviour:

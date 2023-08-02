@@ -646,7 +646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _colyseusSettings: {fileID: 11400000, guid: 5bc347ccc1a8b2c47a8a7f7a8e8309e3, type: 2}
-  _player: {fileID: 7220816372424605448, guid: 7b8245ac175d4f14ca154b2d2f1dca52, type: 3}
+  _player: {fileID: 7220816372424605463, guid: 7b8245ac175d4f14ca154b2d2f1dca52, type: 3}
   _parent: {fileID: 458817310}
   _enemy: {fileID: 3165517364543478886, guid: fcb3a595814c9764ab3def3a20a91a9c, type: 3}
   _parentEnemy: {fileID: 1789041772}
