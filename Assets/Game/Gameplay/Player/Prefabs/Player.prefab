@@ -213,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c05680b60c2fb9948a04a14607209303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _multiplayerManager: {fileID: 0}
   _player: {fileID: 7220816372424605463}
   _gun: {fileID: 4872900470380487782}
   _mouseSensetivity: 2

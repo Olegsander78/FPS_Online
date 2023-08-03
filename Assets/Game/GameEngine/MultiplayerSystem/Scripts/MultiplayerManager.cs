@@ -1,4 +1,5 @@
 using Colyseus;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,8 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     private Transform _parentEnemy;
 
     private ColyseusRoom<State> _room;
+
+    private Dictionary<string, EnemyController> _enemies = new();
 
     public void SendMessage(string key, Dictionary<string,object> data)
     {
@@ -48,6 +51,21 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         _room = await Instance.client.JoinOrCreate<State>("state_handler", data);
 
         _room.OnStateChange += OnChange;
+
+        _room.OnMessage<string>("Shoot", ApllyShoot);
+    }
+
+    private void ApllyShoot(string jsonShootInfo)
+    {
+        var shootInfo = JsonUtility.FromJson<ShootInfo>(jsonShootInfo);
+
+        if (!_enemies.ContainsKey(shootInfo.key))
+        {
+            Debug.LogError("Enemy tried to shoot, bu enemy not found!");
+            return;
+        }
+
+        _enemies[shootInfo.key].Shoot(shootInfo);
     }
 
     private void OnChange(State state, bool isFirstState)
@@ -80,12 +98,19 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
         var enemy = Instantiate(_enemy, position, Quaternion.identity, _parentEnemy);
         enemy.Init(player);
+
+        _enemies.Add(key, enemy);
     }
 
 
     private void RemoveEnemy(string key, Player player)
     {
+        if (!_enemies.ContainsKey(key))
+            return;
 
+        _enemies[key].Destroy();
+
+        _enemies.Remove(key);
     }
 
     protected override void OnDestroy()

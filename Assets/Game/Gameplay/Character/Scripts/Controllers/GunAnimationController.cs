@@ -5,7 +5,7 @@ public class GunAnimationController : MonoBehaviour
     private const string SHOOT = "Shoot";
     
     [SerializeField]
-    private PlayerGun _gun;
+    private Gun _gun;
 
     [SerializeField]
     private Animator _animator;

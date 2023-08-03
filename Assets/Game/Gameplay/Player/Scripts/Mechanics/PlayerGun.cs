@@ -3,13 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGun : MonoBehaviour
-{
-    public event Action OnShooted;
-    
-    [SerializeField]
-    private Bullet _bulletPrefab;
-
+public class PlayerGun : Gun
+{   
     [SerializeField]
     private Transform _bulletPoint;
 
@@ -29,24 +24,22 @@ public class PlayerGun : MonoBehaviour
             return false;
 
         var position = _bulletPoint.position;
-        var direction = _bulletPoint.forward;
+        var velocity = _bulletPoint.forward * _bulletSpeed;
         
         _lastShootTime = Time.time;
 
         Instantiate(_bulletPrefab, position, _bulletPoint.rotation)
-            .Init(direction, _bulletSpeed);
+            .Init(velocity);
 
         OnShooted?.Invoke();
-
-        direction *= _bulletSpeed;
 
         info.pX = position.x;
         info.pY = position.y;
         info.pZ = position.z;
 
-        info.dX = direction.x;
-        info.dY = direction.y;
-        info.dZ = direction.z;
+        info.dX = velocity.x;
+        info.dY = velocity.y;
+        info.dZ = velocity.z;
 
         return true;
     }

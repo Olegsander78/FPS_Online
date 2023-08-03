@@ -20,6 +20,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private EnemyCharacter _enemyCharacter;
 
+    [SerializeField]
+    private EnemyGun _gun;
+
     private List<float> _receiveTimeInterval = new() { 0, 0, 0, 0, 0 };
 
     private float _lastReceiveTime = 0f;
@@ -30,6 +33,14 @@ public class EnemyController : MonoBehaviour
         _player = player;
         _enemyCharacter.SetSpeed(player.speed);
         player.OnChange += OnChange;
+    }
+
+    public void Shoot(in ShootInfo info)
+    {
+        var position = new Vector3(info.pX, info.pY, info.pZ);
+        var velocity = new Vector3(info.dX, info.dY, info.dZ);
+
+        _gun.Shoot(position, velocity);
     }
 
     public void Destroy()
