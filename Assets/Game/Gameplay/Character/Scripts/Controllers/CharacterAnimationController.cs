@@ -25,7 +25,7 @@ public class CharacterAnimationController : MonoBehaviour
 
     private void OnCrouche(bool isCrouche)
     {
-        _animator.SetBool(CROUCHE, isCrouche);
+        //_animator.SetBool(CROUCHE, isCrouche);
     }
 
     void Update()

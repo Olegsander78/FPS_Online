@@ -27,8 +27,8 @@ public class PlayerCharacter : Character
     [SerializeField]
     private float _jumpDelay = 0.2f;
 
-    [SerializeField]
-    private float _timeCrouching = 5f;
+    //[SerializeField]
+    //private float _timeCrouching = 5f;
 
     [SerializeField]
     private Transform _crouchedTransform;
@@ -85,10 +85,8 @@ public class PlayerCharacter : Character
 
     internal bool Crouche()
     {        
-        //_crouchedTransform.localScale = Vector3.Lerp(_standingScale,_crouchingScale,Time.deltaTime * _timeCrouching);
-        _crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, new(1f, 0.5f, 1f), Time.deltaTime * _timeCrouching);
-        //_crouchedTransform.localScale = new(1f, 0.5f, 1f);
-        //_crouchedTransform.localScale = _crouchingScale;
+        //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _crouchingScale, Time.deltaTime * _timeCrouching);
+        _crouchedTransform.localScale = _crouchingScale;
 
         OnCrouched?.Invoke(true);
 
@@ -98,10 +96,8 @@ public class PlayerCharacter : Character
     internal bool StandUp()
     {
       
-        //_crouchedTransform.localScale = Vector3.Lerp(_crouchingScale,_standingScale,Time.deltaTime * _timeCrouching);
-        _crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, new(1f, 1f, 1f), Time.deltaTime * _timeCrouching);
-        //_crouchedTransform.localScale = new(1f, 1f, 1f);
-        //_crouchedTransform.localScale = new(1f, 1f, 1f);
+        //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _standingScale, Time.deltaTime * _timeCrouching);
+        _crouchedTransform.localScale = _standingScale;
 
         OnCrouched?.Invoke(false);
 
