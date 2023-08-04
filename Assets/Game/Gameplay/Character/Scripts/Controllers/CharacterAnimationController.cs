@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class CharacterAnimationController : MonoBehaviour
 {
     private const string GROUNDED = "Grounded";
     private const string SPEED = "Speed";
+    private const string CROUCHE = "Crouche";
 
     [SerializeField]
     private Animator _animator;
@@ -16,6 +18,16 @@ public class CharacterAnimationController : MonoBehaviour
     [SerializeField]
     private Character _character;
 
+    private void Start()
+    {
+        _character.OnCrouched += OnCrouche;
+    }
+
+    private void OnCrouche(bool isCrouche)
+    {
+        _animator.SetBool(CROUCHE, isCrouche);
+    }
+
     void Update()
     {
         var localVelocity = _character.transform.InverseTransformVector(_character.Velocity);
@@ -24,5 +36,10 @@ public class CharacterAnimationController : MonoBehaviour
 
         _animator.SetFloat(SPEED, speed * sign);
         _animator.SetBool(GROUNDED, _checkFly.IsFly == false);
+    }
+
+    private void OnDestroy()
+    {
+        _character.OnCrouched -= OnCrouche;
     }
 }

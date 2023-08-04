@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerCharacter : Character
@@ -7,9 +8,6 @@ public class PlayerCharacter : Character
 
     [SerializeField]
     private CheckFly _checkFly;
-
-    //[SerializeField]
-    //private float _speed = 2f;
 
     [SerializeField]
     private Transform _head;
@@ -29,7 +27,16 @@ public class PlayerCharacter : Character
     [SerializeField]
     private float _jumpDelay = 0.2f;
 
+    [SerializeField]
+    private float _timeCrouching = 5f;
+
+    [SerializeField]
+    private Transform _crouchedTransform;
+
     private float _inputH, _inputV, _rotateY, _currentRotateX, _jumpTime;
+
+    private Vector3 _standingScale = new(1f, 1f, 1f);
+    private Vector3 _crouchingScale = new(1f,0.5f,1f);
 
     private void Start()
     {
@@ -76,26 +83,51 @@ public class PlayerCharacter : Character
         _rigidbody.AddForce(0f, _jumpForce, 0f, ForceMode.VelocityChange);
     }
 
+    internal bool Crouche()
+    {        
+        //_crouchedTransform.localScale = Vector3.Lerp(_standingScale,_crouchingScale,Time.deltaTime * _timeCrouching);
+        _crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, new(1f, 0.5f, 1f), Time.deltaTime * _timeCrouching);
+        //_crouchedTransform.localScale = new(1f, 0.5f, 1f);
+        //_crouchedTransform.localScale = _crouchingScale;
+
+        OnCrouched?.Invoke(true);
+
+        return true;
+    }
+
+    internal bool StandUp()
+    {
+      
+        //_crouchedTransform.localScale = Vector3.Lerp(_crouchingScale,_standingScale,Time.deltaTime * _timeCrouching);
+        _crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, new(1f, 1f, 1f), Time.deltaTime * _timeCrouching);
+        //_crouchedTransform.localScale = new(1f, 1f, 1f);
+        //_crouchedTransform.localScale = new(1f, 1f, 1f);
+
+        OnCrouched?.Invoke(false);
+
+        return true;
+    }
+
+    private void Move()
+    {
+        var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * Speed;
+        velocity.y = _rigidbody.velocity.y;
+        Velocity = velocity;
+        _rigidbody.velocity = Velocity;
+    }
+
     public void GetMoveInfo(out Vector3 position
         ,out Vector3 velocity
         ,out float rotateX
-        ,out float rotateY)
+        ,out float rotateY
+        ,out float scaleY)
     {
         position = transform.position;
         velocity = _rigidbody.velocity;
 
         rotateX = _head.localEulerAngles.x;
         rotateY = transform.eulerAngles.y;
-    }    
 
-    private void Move()
-    {
-        //var direction = new Vector3(_inputH, 0f, _inputV).normalized;
-        //transform.position += direction * Time.deltaTime * _speed;
-
-        var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * Speed;
-        velocity.y = _rigidbody.velocity.y;
-        Velocity = velocity;
-        _rigidbody.velocity = Velocity;
-    }
+        scaleY = _crouchedTransform.localScale.y;
+    }     
 }
