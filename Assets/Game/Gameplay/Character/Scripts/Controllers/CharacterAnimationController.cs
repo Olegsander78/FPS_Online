@@ -7,10 +7,13 @@ public class CharacterAnimationController : MonoBehaviour
 {
     private const string GROUNDED = "Grounded";
     private const string SPEED = "Speed";
-    private const string CROUCHE = "Crouche";
+    private const string CROUCHE = "isCrouche";
 
     [SerializeField]
     private Animator _animator;
+
+    [SerializeField]
+    private Animator _animatorFullBody;
 
     [SerializeField]
     private CheckFly _checkFly;
@@ -25,7 +28,7 @@ public class CharacterAnimationController : MonoBehaviour
 
     private void OnCrouche(bool isCrouche)
     {
-        //_animator.SetBool(CROUCHE, isCrouche);
+        _animatorFullBody.SetBool(CROUCHE, isCrouche);
     }
 
     void Update()

@@ -1,8 +1,14 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCharacter : Character
 {
+    private const float CROUCHED_HEIGHT = 1.7f;
+    private const float CROUCHED_CENTER_Y = -0.15f;
+    private const float STANDUP_HEIGHT = 2f;
+    private const float STANDUP_CENTER_Y = 0f;
+    
     [SerializeField] 
     private Rigidbody _rigidbody;
 
@@ -31,12 +37,15 @@ public class PlayerCharacter : Character
     //private float _timeCrouching = 5f;
 
     [SerializeField]
-    private Transform _crouchedTransform;
+    private Transform _crouchedColliderTransform;
+
+    [SerializeField]
+    private CapsuleCollider _crouchedCollider;
 
     private float _inputH, _inputV, _rotateY, _currentRotateX, _jumpTime;
 
     private Vector3 _standingScale = new(1f, 1f, 1f);
-    private Vector3 _crouchingScale = new(1f,0.5f,1f);
+    private Vector3 _crouchingScale = new(1f,0.7f,1f);
 
     private void Start()
     {
@@ -74,19 +83,20 @@ public class PlayerCharacter : Character
 
         if (Time.time - _jumpTime < _jumpDelay)
         {
-            //Debug.Log($"Time = {Time.time}, JumpTime = {_jumpTime}, Time-jumptime = {Time.time - _jumpTime}");
             return;
         }
 
         _jumpTime = Time.time;
-        //Debug.Log($"Time = {Time.time}, JumpTime = {_jumpTime}, Time-jumptime = {Time.time - _jumpTime}");
         _rigidbody.AddForce(0f, _jumpForce, 0f, ForceMode.VelocityChange);
     }
 
     internal bool Crouche()
-    {        
+    {
         //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _crouchingScale, Time.deltaTime * _timeCrouching);
-        _crouchedTransform.localScale = _crouchingScale;
+        //_crouchedColliderTransform.localScale = _crouchingScale;
+
+        _crouchedCollider.height = CROUCHED_HEIGHT;
+        _crouchedCollider.center = new(0f, CROUCHED_CENTER_Y, 0f);
 
         OnCrouched?.Invoke(true);
 
@@ -95,10 +105,13 @@ public class PlayerCharacter : Character
 
     internal bool StandUp()
     {
-      
-        //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _standingScale, Time.deltaTime * _timeCrouching);
-        _crouchedTransform.localScale = _standingScale;
 
+        //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _standingScale, Time.deltaTime * _timeCrouching);
+        //_crouchedColliderTransform.localScale = _standingScale;
+
+        _crouchedCollider.height = STANDUP_HEIGHT;
+        _crouchedCollider.center = new(0f, STANDUP_CENTER_Y, 0f);
+       
         OnCrouched?.Invoke(false);
 
         return true;
@@ -116,7 +129,7 @@ public class PlayerCharacter : Character
         ,out Vector3 velocity
         ,out float rotateX
         ,out float rotateY
-        ,out float scaleY)
+        ,out float colliderH)
     {
         position = transform.position;
         velocity = _rigidbody.velocity;
@@ -124,6 +137,6 @@ public class PlayerCharacter : Character
         rotateX = _head.localEulerAngles.x;
         rotateY = transform.eulerAngles.y;
 
-        scaleY = _crouchedTransform.localScale.y;
+        colliderH = _crouchedCollider.height;
     }     
 }

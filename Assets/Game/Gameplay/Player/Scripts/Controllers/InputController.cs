@@ -96,7 +96,7 @@ public class InputController : MonoBehaviour
             , out Vector3 velocity
             , out float rotateX
             , out float rotateY
-            , out float scaleY
+            , out float colliderH
             );
 
         var data = new Dictionary<string, object>()
@@ -109,7 +109,7 @@ public class InputController : MonoBehaviour
             {"vZ",velocity.z },
             {"rX",rotateX },
             {"rY",rotateY },
-            {"sY",scaleY }
+            {"cH",colliderH }
         };
 
         _multiplayerManager.SendMessage("move", data);
