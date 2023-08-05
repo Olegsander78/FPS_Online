@@ -32,6 +32,7 @@ public class EnemyController : MonoBehaviour
     {
         _player = player;
         _enemyCharacter.SetSpeed(player.speed);
+        _enemyCharacter.SetHeight(player.cH);
         player.OnChange += OnChange;
     }
 
@@ -56,6 +57,9 @@ public class EnemyController : MonoBehaviour
 
         var position = _enemyCharacter.TargetPosition;
         var velocity = _enemyCharacter.Velocity;
+
+        var rotationX = _enemyCharacter.GetRotateX();
+        var rotationY = _enemyCharacter.GetRotateY();
         
         foreach (var dataChange in changes)
         {
@@ -80,10 +84,19 @@ public class EnemyController : MonoBehaviour
                     velocity.z = (float)dataChange.Value;
                     break;
                 case "rX":
-                    _enemyCharacter.SetRotateX((float)dataChange.Value);
+                    _enemyCharacter.SetRotateLerpX(rotationX, (float)dataChange.Value, AverageInterval);
                     break;
                 case "rY":
-                    _enemyCharacter.SetRotateY((float)dataChange.Value);
+                    _enemyCharacter.SetRotateLerpY(rotationY, (float)dataChange.Value, AverageInterval);
+                    break;
+                //case "rX":
+                //    _enemyCharacter.SetRotateX((float)dataChange.Value);
+                //    break;
+                //case "rY":
+                //    _enemyCharacter.SetRotateY((float)dataChange.Value);
+                //    break;
+                case "cH":
+                    _enemyCharacter.SetHeight((float)dataChange.Value);
                     break;
                 default:
                     Debug.LogWarning("Не обрабатывается изменение поля: " + dataChange.Field);

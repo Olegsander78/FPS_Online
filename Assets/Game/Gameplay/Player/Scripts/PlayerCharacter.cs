@@ -3,11 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerCharacter : Character
-{
-    private const float CROUCHED_HEIGHT = 1.7f;
-    private const float CROUCHED_CENTER_Y = -0.15f;
-    private const float STANDUP_HEIGHT = 2f;
-    private const float STANDUP_CENTER_Y = 0f;
+{   
     
     [SerializeField] 
     private Rigidbody _rigidbody;
@@ -44,8 +40,10 @@ public class PlayerCharacter : Character
 
     private float _inputH, _inputV, _rotateY, _currentRotateX, _jumpTime;
 
-    private Vector3 _standingScale = new(1f, 1f, 1f);
-    private Vector3 _crouchingScale = new(1f,0.7f,1f);
+    private readonly bool _isCrouched = true;
+
+    //private Vector3 _standingScale = new(1f, 1f, 1f);
+    //private Vector3 _crouchingScale = new(1f,0.7f,1f);
 
     private void Start()
     {
@@ -98,7 +96,7 @@ public class PlayerCharacter : Character
         _crouchedCollider.height = CROUCHED_HEIGHT;
         _crouchedCollider.center = new(0f, CROUCHED_CENTER_Y, 0f);
 
-        OnCrouched?.Invoke(true);
+        OnCrouched?.Invoke(_isCrouched);
 
         return true;
     }
@@ -112,7 +110,7 @@ public class PlayerCharacter : Character
         _crouchedCollider.height = STANDUP_HEIGHT;
         _crouchedCollider.center = new(0f, STANDUP_CENTER_Y, 0f);
        
-        OnCrouched?.Invoke(false);
+        OnCrouched?.Invoke(!_isCrouched);
 
         return true;
     }
