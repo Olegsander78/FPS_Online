@@ -218,7 +218,8 @@ MonoBehaviour:
   _multiplayerManager: {fileID: 0}
   _player: {fileID: 7220816372424605463}
   _gun: {fileID: 4872900470380487782}
-  _mouseSensetivity: 2
+  _mouseSensetivityY: 300
+  _mouseSensetivityX: 500
 --- !u!114 &5550962331572671127
 MonoBehaviour:
   m_ObjectHideFlags: 0

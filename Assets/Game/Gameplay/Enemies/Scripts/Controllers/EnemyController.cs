@@ -1,5 +1,6 @@
 using Colyseus.Schema;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -17,6 +18,19 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    private float AverageIntervalRotation
+    {
+        get
+        {
+            float summ = 0;
+            for (int i = 0; i < _receiveTimeIntervalRotation.Count; i++)
+            {
+                summ += _receiveTimeIntervalRotation[i];
+            }
+            return summ / _receiveTimeIntervalRotation.Count;
+        }
+    }
+
     [SerializeField]
     private EnemyCharacter _enemyCharacter;
 
@@ -24,6 +38,7 @@ public class EnemyController : MonoBehaviour
     private EnemyGun _gun;
 
     private List<float> _receiveTimeInterval = new() { 0, 0, 0, 0, 0 };
+    private List<float> _receiveTimeIntervalRotation = new() { 0, 0, 0, 0, 0 };
 
     private float _lastReceiveTime = 0f;
     private Player _player;
@@ -58,8 +73,11 @@ public class EnemyController : MonoBehaviour
         var position = _enemyCharacter.TargetPosition;
         var velocity = _enemyCharacter.Velocity;
 
-        var rotationX = _enemyCharacter.GetRotateX();
-        var rotationY = _enemyCharacter.GetRotateY();
+        float rotationY = _enemyCharacter.TargetRotationY.y;
+        float angularVelocityY = _enemyCharacter.AngularVelocity.y;
+
+        //var rotationX = _enemyCharacter.GetRotateX();
+        //var rotationY = _enemyCharacter.GetRotateY();
         
         foreach (var dataChange in changes)
         {
@@ -84,17 +102,17 @@ public class EnemyController : MonoBehaviour
                     velocity.z = (float)dataChange.Value;
                     break;
                 case "rX":
-                    _enemyCharacter.SetRotateLerpX(rotationX, (float)dataChange.Value, AverageInterval);
+                    _enemyCharacter.SetRotateX((float)dataChange.Value);
                     break;
                 case "rY":
-                    _enemyCharacter.SetRotateLerpY(rotationY, (float)dataChange.Value, AverageInterval);
+                    rotationY = (float)dataChange.Value;
                     break;
-                //case "rX":
-                //    _enemyCharacter.SetRotateX((float)dataChange.Value);
-                //    break;
                 //case "rY":
                 //    _enemyCharacter.SetRotateY((float)dataChange.Value);
                 //    break;
+                case "avY":
+                    angularVelocityY = (float)dataChange.Value;
+                    break;
                 case "cH":
                     _enemyCharacter.SetHeight((float)dataChange.Value);
                     break;
@@ -105,6 +123,8 @@ public class EnemyController : MonoBehaviour
         }
 
         _enemyCharacter.SetMovement(position, velocity, AverageInterval);
+
+        _enemyCharacter.SetSmoothRotationY(rotationY, angularVelocityY, AverageIntervalRotation);
     }
 
     private void SaveReceiveTime()

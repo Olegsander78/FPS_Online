@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class EnemyCharacter : Character
 {
     public Vector3 TargetPosition { get; private set; } = Vector3.zero;
+    public Quaternion TargetRotationY { get; private set; }
 
     [SerializeField]
     private Transform _head;
@@ -12,12 +14,14 @@ public class EnemyCharacter : Character
     private CapsuleCollider _crouchedCollider;
 
     private float _velocityMagnitude = 0f;
+    private float _angularVelocityYMagnitude = 0f;
     private readonly bool _isCrouched = true;
 
 
     private void Start()
     {
         TargetPosition = transform.position;
+        TargetRotationY = transform.rotation;
     }
 
     private void Update()
@@ -30,6 +34,18 @@ public class EnemyCharacter : Character
         else
         {
             transform.position = TargetPosition;
+        }
+
+        if (_angularVelocityYMagnitude > 0.1f)
+        {
+            var maxAngle = _angularVelocityYMagnitude * Time.deltaTime;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, TargetRotationY, maxAngle);
+
+            TargetRotationY = transform.rotation;
+        }
+        else
+        {
+            transform.rotation = TargetRotationY;
         }
     }
 
@@ -61,15 +77,23 @@ public class EnemyCharacter : Character
         this.Velocity = velocity;
     }
 
+    public void SetSmoothRotationY(in float eulerRotation, in float angularVelocityY, in float averageInterval)
+    {
+        if (eulerRotation != 0f && angularVelocityY != 0f)
+        {
+            TargetRotationY = Quaternion.Euler(0f, eulerRotation, 0f) * Quaternion.Euler(0f, angularVelocityY * averageInterval, 0f);
+
+            _angularVelocityYMagnitude = Mathf.Abs(new Vector3(0f, angularVelocityY * averageInterval, 0f).magnitude);
+
+            this.AngularVelocity = new Vector3(0f, angularVelocityY * averageInterval, 0f);
+        }
+    }
+
     public void SetRotateX(float value)
     {
         _head.localEulerAngles = new Vector3(value, 0f, 0f);
     }
 
-    public void SetRotateLerpX(in float rotateXClient, in float rotateXServer, in float averageInterval)
-    {
-        transform.rotation = Quaternion.Lerp(Quaternion.Euler(rotateXClient, 0f, 0f), Quaternion.Euler(rotateXServer, 0f, 0f), averageInterval);
-    }
 
     public float GetRotateX()
     {
@@ -81,13 +105,15 @@ public class EnemyCharacter : Character
         transform.localEulerAngles = new Vector3(0f, value, 0f);
     }
 
-    public void SetRotateLerpY(in float rotateYClient, in float rotateYServer, in float averageInterval)
+    public void SetRotateLerpY(in float rotateYClient, in float angularVelocutyY, in float averageInterval)
     {
-        transform.rotation = Quaternion.Lerp(Quaternion.Euler(0f, rotateYClient, 0f), Quaternion.Euler(0f, rotateYServer, 0f), averageInterval);
+        transform.rotation = Quaternion.Lerp(Quaternion.Euler(0f, rotateYClient, 0f), Quaternion.Euler(0f, angularVelocutyY, 0f), averageInterval);
+        _angularVelocityYMagnitude = new Vector3(0f, angularVelocutyY, 0f).magnitude;
+        this.AngularVelocity = new(0f, angularVelocutyY, 0f);        
     }
 
     public float GetRotateY()
     {
-        return _head.localEulerAngles.y;
+        return transform.localEulerAngles.y;
     }
 }

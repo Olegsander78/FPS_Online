@@ -29,9 +29,6 @@ public class PlayerCharacter : Character
     [SerializeField]
     private float _jumpDelay = 0.2f;
 
-    //[SerializeField]
-    //private float _timeCrouching = 5f;
-
     [SerializeField]
     private Transform _crouchedColliderTransform;
 
@@ -42,15 +39,15 @@ public class PlayerCharacter : Character
 
     private readonly bool _isCrouched = true;
 
-    //private Vector3 _standingScale = new(1f, 1f, 1f);
-    //private Vector3 _crouchingScale = new(1f,0.7f,1f);
-
     private void Start()
     {
         var camera = Camera.main.transform;
         camera.parent = _cameraPoint;
         camera.localPosition = Vector3.zero;
         camera.localRotation = Quaternion.identity;
+
+        //Cursor.lockState = CursorLockMode.Locked; 
+        //Cursor.visible = false;
     }
     private void FixedUpdate()
     {
@@ -62,10 +59,28 @@ public class PlayerCharacter : Character
         _currentRotateX = Mathf.Clamp(_currentRotateX + value, _minHeadAngle, _maxHeadAngle);
         _head.localEulerAngles = new Vector3(_currentRotateX, 0f, 0f);
     }
+
+
+    //public void RotateY()
+    //{
+    //    _rigidbody.angularVelocity = new Vector3(0f, _rotateY, 0f);
+    //    _rotateY = 0f;
+    //}
+
+    
     public void RotateY()
     {
-        _rigidbody.angularVelocity = new Vector3(0f, _rotateY, 0f);
+        var angularVelocity = new Vector3(0f, _rotateY, 0f);
+        AngularVelocity = angularVelocity;
+        _rigidbody.angularVelocity = AngularVelocity;
         _rotateY = 0f;
+    }
+    private void Move()
+    {
+        var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * Speed;
+        velocity.y = _rigidbody.velocity.y;
+        Velocity = velocity;
+        _rigidbody.velocity = Velocity;
     }
     public void SetInput(float h, float v, float rotateY)
     {
@@ -73,7 +88,6 @@ public class PlayerCharacter : Character
         _inputV = v;
         _rotateY += rotateY;
     }
-
     public void Jump()
     {
         if (_checkFly.IsFly)
@@ -90,9 +104,6 @@ public class PlayerCharacter : Character
 
     internal bool Crouche()
     {
-        //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _crouchingScale, Time.deltaTime * _timeCrouching);
-        //_crouchedColliderTransform.localScale = _crouchingScale;
-
         _crouchedCollider.height = CROUCHED_HEIGHT;
         _crouchedCollider.center = new(0f, CROUCHED_CENTER_Y, 0f);
 
@@ -103,30 +114,19 @@ public class PlayerCharacter : Character
 
     internal bool StandUp()
     {
-
-        //_crouchedTransform.localScale = Vector3.Lerp(_crouchedTransform.localScale, _standingScale, Time.deltaTime * _timeCrouching);
-        //_crouchedColliderTransform.localScale = _standingScale;
-
         _crouchedCollider.height = STANDUP_HEIGHT;
         _crouchedCollider.center = new(0f, STANDUP_CENTER_Y, 0f);
        
         OnCrouched?.Invoke(!_isCrouched);
 
         return true;
-    }
-
-    private void Move()
-    {
-        var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * Speed;
-        velocity.y = _rigidbody.velocity.y;
-        Velocity = velocity;
-        _rigidbody.velocity = Velocity;
-    }
+    }    
 
     public void GetMoveInfo(out Vector3 position
         ,out Vector3 velocity
         ,out float rotateX
         ,out float rotateY
+        ,out Vector3 angularVelocity
         ,out float colliderH)
     {
         position = transform.position;
@@ -134,7 +134,10 @@ public class PlayerCharacter : Character
 
         rotateX = _head.localEulerAngles.x;
         rotateY = transform.eulerAngles.y;
+        angularVelocity = _rigidbody.angularVelocity;
 
         colliderH = _crouchedCollider.height;
-    }     
+    }
+
+    
 }
