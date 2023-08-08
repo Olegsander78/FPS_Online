@@ -28,10 +28,13 @@ public class EnemyController : MonoBehaviour
     private float _lastReceiveTime = 0f;
     private Player _player;
 
-    public void Init(Player player)
+    public void Init(string key, Player player)
     {
+        _enemyCharacter.Init(key);
         _player = player;
         _enemyCharacter.SetSpeed(player.speed);
+        _enemyCharacter.SetMaxHP(player.maxHP);
+
         player.OnChange += OnChange;
     }
 
@@ -86,7 +89,7 @@ public class EnemyController : MonoBehaviour
                     _enemyCharacter.SetRotateY((float)dataChange.Value);
                     break;
                 default:
-                    Debug.LogWarning("Не обрабатывается изменение поля: " + dataChange.Field);
+                    Debug.LogWarning("Не обрабатывается в Enemy изменение поля: " + dataChange.Field);
                     break;
             }
         }
@@ -101,7 +104,7 @@ public class EnemyController : MonoBehaviour
         _lastReceiveTime = Time.time;
 
         _receiveTimeInterval.Add(interval);
-        _receiveTimeInterval.Remove(0);
+        _receiveTimeInterval.RemoveAt(0);
     }
 }
 

@@ -1,5 +1,4 @@
 using Colyseus;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,7 +44,8 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
         var data = new Dictionary<string, object>()
         {
-            {"speed", _player.Speed }
+            {"speed", _player.Speed },
+            {"hp", _player.MaxHealth }
         };
 
         _room = await Instance.client.JoinOrCreate<State>("state_handler", data);
@@ -89,7 +89,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     {
         var position = new Vector3(player.pX, player.pY, player.pZ);
 
-        Instantiate(_player, position, Quaternion.identity, _parent);
+        player.OnChange += Instantiate(_player, position, Quaternion.identity, _parent).OnChange;
     }
 
     private void CreateEnemy(string key, Player player)
@@ -97,7 +97,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         var position = new Vector3(player.pX, player.pY, player.pZ);
 
         var enemy = Instantiate(_enemy, position, Quaternion.identity, _parentEnemy);
-        enemy.Init(player);
+        enemy.Init(key, player);
 
         _enemies.Add(key, enemy);
     }

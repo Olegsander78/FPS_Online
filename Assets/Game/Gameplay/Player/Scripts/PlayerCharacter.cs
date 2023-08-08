@@ -1,7 +1,13 @@
+using Colyseus.Schema;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCharacter : Character
 {
+    [SerializeField]
+    private Health _health;
+
     [SerializeField] 
     private Rigidbody _rigidbody;
 
@@ -37,6 +43,9 @@ public class PlayerCharacter : Character
         camera.parent = _cameraPoint;
         camera.localPosition = Vector3.zero;
         camera.localRotation = Quaternion.identity;
+
+        _health.SetMax(MaxHealth);
+        _health.SetCurrent(MaxHealth);
     }
     private void FixedUpdate()
     {
@@ -67,12 +76,10 @@ public class PlayerCharacter : Character
 
         if (Time.time - _jumpTime < _jumpDelay)
         {
-            //Debug.Log($"Time = {Time.time}, JumpTime = {_jumpTime}, Time-jumptime = {Time.time - _jumpTime}");
             return;
         }
 
         _jumpTime = Time.time;
-        //Debug.Log($"Time = {Time.time}, JumpTime = {_jumpTime}, Time-jumptime = {Time.time - _jumpTime}");
         _rigidbody.AddForce(0f, _jumpForce, 0f, ForceMode.VelocityChange);
     }
 
@@ -90,12 +97,25 @@ public class PlayerCharacter : Character
 
     private void Move()
     {
-        //var direction = new Vector3(_inputH, 0f, _inputV).normalized;
-        //transform.position += direction * Time.deltaTime * _speed;
-
         var velocity = (transform.forward * _inputV + transform.right * _inputH).normalized * Speed;
         velocity.y = _rigidbody.velocity.y;
         Velocity = velocity;
         _rigidbody.velocity = Velocity;
+    }
+
+    internal void OnChange(List<DataChange> changes)
+    {
+        foreach (var dataChange in changes)
+        {
+            switch (dataChange.Field)
+            {
+                case "currentHP":
+                    _health.SetCurrent((sbyte)dataChange.Value);
+                    break;
+                default:
+                    Debug.LogWarning("Не обрабатывается в Player изменение поля: " + dataChange.Field);
+                    break;
+            }
+        }
     }
 }
