@@ -1,14 +1,16 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class InputController : MonoBehaviour
-{
-    [SerializeField]
-    private MultiplayerManager _multiplayerManager;
-    
+{        
     [SerializeField]
     private PlayerCharacter _player;
+
+    [SerializeField]
+    private float _restartDelay = 3f;
 
     [SerializeField]
     private PlayerGun _gun;
@@ -16,12 +18,18 @@ public class InputController : MonoBehaviour
     [SerializeField]
     private float _mouseSensetivity = 2f;
 
+    private MultiplayerManager _multiplayerManager;
+    private bool _hold = false;
+
     private void Start()
     {
         _multiplayerManager = MultiplayerManager.Instance;
     }
     private void Update()
     {
+        if (_hold)
+            return;
+
         var h = Input.GetAxisRaw("Horizontal");
         var v = Input.GetAxisRaw("Vertical");
 
@@ -75,6 +83,37 @@ public class InputController : MonoBehaviour
         
         _multiplayerManager.SendMessage("move", data);
     }
+
+    public void Restart(string jsonRestartInfo)
+    {
+        RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonRestartInfo);
+
+        StartCoroutine(HoldRoutine());
+
+        _player.transform.position = new Vector3(info.x, 0f, info.z);
+        _player.SetInput(0f, 0f, 0f);
+
+        var data = new Dictionary<string, object>()
+        {
+            {"pX",info.x },
+            {"pY",0f },
+            {"pZ",info.z },
+            {"vX",0f },
+            {"vY",0f },
+            {"vZ",0f },
+            {"rX",0f },
+            {"rY",0f }
+        };
+
+        _multiplayerManager.SendMessage("move", data);
+    }
+
+    private IEnumerator HoldRoutine()
+    {
+        _hold = true;
+        yield return new WaitForSecondsRealtime(_restartDelay);
+        _hold = false;
+    }
 }
 
 [Serializable]
@@ -88,3 +127,11 @@ public struct ShootInfo
     public float dY;
     public float dZ;
 }
+
+[Serializable]
+public struct RestartInfo
+{
+    public float x;
+    public float z;
+}
+

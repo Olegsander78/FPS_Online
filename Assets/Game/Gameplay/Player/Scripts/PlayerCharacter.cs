@@ -109,11 +109,14 @@ public class PlayerCharacter : Character
         {
             switch (dataChange.Field)
             {
+                case "loss":
+                    MultiplayerManager.Instance.LossCounter.SetPlayerLoss((byte)dataChange.PreviousValue);
+                    break;
                 case "currentHP":
                     _health.SetCurrent((sbyte)dataChange.Value);
                     break;
                 default:
-                    Debug.LogWarning("Не обрабатывается в Player изменение поля: " + dataChange.Field);
+                    //Debug.LogWarning("Не обрабатывается в Player изменение поля: " + dataChange.Field);
                     break;
             }
         }
