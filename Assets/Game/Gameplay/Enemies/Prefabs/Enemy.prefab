@@ -319,6 +319,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyCharacter: {fileID: 3959333079358152577}
   _gun: {fileID: 2799672732285156568}
+  _weapons:
+  - {fileID: 8110999804183859375}
+  - {fileID: 3324890198646906163}
+  - {fileID: 3996854718043944146}
 --- !u!114 &6838762698201127290
 MonoBehaviour:
   m_ObjectHideFlags: 0

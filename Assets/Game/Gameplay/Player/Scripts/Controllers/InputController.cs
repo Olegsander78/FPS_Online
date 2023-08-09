@@ -5,12 +5,17 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 public class InputController : MonoBehaviour
-{        
+{
+    public Action<int> OnWeaponSelected;
+    
     [SerializeField]
     private PlayerCharacter _player;
 
     [SerializeField]
     private float _restartDelay = 3f;
+
+    [SerializeField]
+    private GameObject[] _weapons; 
 
     [SerializeField]
     private PlayerGun _gun;
@@ -20,10 +25,14 @@ public class InputController : MonoBehaviour
 
     private MultiplayerManager _multiplayerManager;
     private bool _hold = false;
+    private int _currentWeaponIndex = 0;
+
 
     private void Start()
     {
         _multiplayerManager = MultiplayerManager.Instance;
+
+
     }
     private void Update()
     {
@@ -44,6 +53,22 @@ public class InputController : MonoBehaviour
 
         _player.RotateX(-mouseY * _mouseSensetivity);
 
+        var scrollWeapons = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scrollWeapons != 0)
+        {
+            int direction = scrollWeapons > 0 ? 1 : -1;
+            SwitchWeapon(_currentWeaponIndex + direction);
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SwitchWeapon(_currentWeaponIndex - 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            SwitchWeapon(_currentWeaponIndex + 1);
+        }
+
         if (space)
             _player.Jump();
 
@@ -51,6 +76,32 @@ public class InputController : MonoBehaviour
             SendShoot(ref shootInfo);
 
         SendMove();
+    }
+
+    private void SwitchWeapon(int weaponIndex)
+    {
+        if (weaponIndex < 0 || weaponIndex >= _weapons.Length)
+        {
+            return;
+        }
+        DeselectWeapon(_currentWeaponIndex); // Деактивируем текущее оружие
+        _currentWeaponIndex = weaponIndex; // Обновляем индекс текущего оружия
+        SelectWeapon(_currentWeaponIndex); // Активируем новое оружие
+    }
+
+    private void SelectWeapon(int weaponIndex)
+    {
+        _weapons[weaponIndex].SetActive(true);
+
+        if (_weapons[weaponIndex].TryGetComponent(out WeaponInfo weaponInfo))
+            _gun.Init(weaponInfo);
+
+        //OnWeaponSelected?.Invoke(weaponIndex);
+    }
+
+    private void DeselectWeapon(int weaponIndex)
+    {
+        _weapons[weaponIndex].SetActive(false);
     }
 
     private void SendShoot(ref ShootInfo shootInfo)

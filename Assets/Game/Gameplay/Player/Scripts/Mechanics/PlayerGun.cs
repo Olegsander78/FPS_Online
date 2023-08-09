@@ -1,7 +1,8 @@
 using UnityEngine;
 
 public class PlayerGun : Gun
-{   
+{     
+
     [SerializeField]
     private Transform _bulletPoint;
 
@@ -15,6 +16,13 @@ public class PlayerGun : Gun
     private float _shootDelay;
 
     private float _lastShootTime;
+
+    public void Init(WeaponInfo weaponInfo)
+    {
+        _bulletSpeed = weaponInfo.BulletSpeed;
+        _damage = weaponInfo.Damage;
+        _shootDelay = weaponInfo.ShootDelay;
+    }
 
     public bool TryShoot(out ShootInfo info)
     {

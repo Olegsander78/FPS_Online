@@ -23,6 +23,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private EnemyGun _gun;
 
+    [SerializeField]
+    private GameObject[] _weapons;
+
     private List<float> _receiveTimeInterval = new() { 0, 0, 0, 0, 0 };
 
     private float _lastReceiveTime = 0f;
