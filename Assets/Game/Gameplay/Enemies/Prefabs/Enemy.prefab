@@ -491,6 +491,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6962412971629794922}
+  - component: {fileID: 3587700340493950923}
   m_Layer: 0
   m_Name: Pistol_Center
   m_TagString: Untagged
@@ -516,6 +517,19 @@ Transform:
   m_Father: {fileID: 5543005693146244076}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3587700340493950923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3324890198646906163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9462a79610e7b8749a512b3d827f2088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponConfig: {fileID: 11400000, guid: 27120dff074d0ea4fb0a02df731d38b8, type: 2}
 --- !u!1 &3939227387151788087
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,6 +622,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 593093939167086054}
+  - component: {fileID: 4115320411715389172}
   m_Layer: 0
   m_Name: Rifle_Center
   m_TagString: Untagged
@@ -633,6 +648,19 @@ Transform:
   m_Father: {fileID: 5543005693146244076}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4115320411715389172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3996854718043944146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9462a79610e7b8749a512b3d827f2088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponConfig: {fileID: 11400000, guid: 6c311ebddeecf774cb842be69471eeb2, type: 2}
 --- !u!1 &4001045002060688716
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,6 +966,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3896213470056147920}
+  - component: {fileID: 4971482470790325962}
   m_Layer: 0
   m_Name: MachineGun_Center
   m_TagString: Untagged
@@ -963,6 +992,19 @@ Transform:
   m_Father: {fileID: 5543005693146244076}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4971482470790325962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8110999804183859375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9462a79610e7b8749a512b3d827f2088, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponConfig: {fileID: 11400000, guid: 3454ad627582af24e9a0a3c78609f776, type: 2}
 --- !u!1 &8115476546730688746
 GameObject:
   m_ObjectHideFlags: 0

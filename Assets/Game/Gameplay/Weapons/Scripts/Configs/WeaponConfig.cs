@@ -3,8 +3,7 @@ using UnityEngine;
 
 [CreateAssetMenu(
     fileName = "New Weapon Configuration",
-    menuName = "Weapon Configuration",
-    order = 51)]
+    menuName = "Weapon Configuration")]
 public class WeaponConfig : ScriptableObject
 {
     [SerializeField]

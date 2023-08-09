@@ -84,9 +84,9 @@ public class InputController : MonoBehaviour
         {
             return;
         }
-        DeselectWeapon(_currentWeaponIndex); // Деактивируем текущее оружие
-        _currentWeaponIndex = weaponIndex; // Обновляем индекс текущего оружия
-        SelectWeapon(_currentWeaponIndex); // Активируем новое оружие
+        DeselectWeapon(_currentWeaponIndex); 
+        _currentWeaponIndex = weaponIndex; 
+        SelectWeapon(_currentWeaponIndex); 
     }
 
     private void SelectWeapon(int weaponIndex)
@@ -95,6 +95,8 @@ public class InputController : MonoBehaviour
 
         if (_weapons[weaponIndex].TryGetComponent(out WeaponInfo weaponInfo))
             _gun.Init(weaponInfo);
+
+        Debug.Log($"Init weapon {weaponInfo.WeaponType}, {weaponInfo.WeaponID},{weaponInfo.Damage},{weaponInfo.BulletSpeed}");
 
         //OnWeaponSelected?.Invoke(weaponIndex);
     }
