@@ -166,10 +166,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bulletPrefab: {fileID: 5777337181214964090, guid: 58c141812362d5148bbf8cb8094ec21b,
     type: 3}
-  _bulletPoint: {fileID: 8510004495065913845}
   _bulletSpeed: 10
   _damage: 1
   _shootDelay: 0.2
+  _bulletPoint: {fileID: 8510004495065913845}
 --- !u!114 &8659932476150552744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +445,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <MaxHealth>k__BackingField: 10
   <Speed>k__BackingField: 5
+  _respawnSystem: {fileID: 0}
   _health: {fileID: 8659932476150552744}
   _rigidbody: {fileID: 3926916453333465492}
   _checkFly: {fileID: 8542396307899828599}

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MultiplayerManager : ColyseusManager<MultiplayerManager>
-{
+{ 
+
     [field: SerializeField]
     public LossCounter LossCounter { get; private set; }
     
@@ -105,18 +106,20 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private void CreatePlayer(Player player)
     {
-        var position = new Vector3(player.pX, player.pY, player.pZ);
+        //var position = new Vector3(player.pX, player.pY, player.pZ);
+        var position = RespawnController.Instance.GetRandomRespawnPoint();
         var playerCharacter = Instantiate(_player, position, Quaternion.identity, _parent);
 
         player.OnChange += playerCharacter.OnChange;
 
         //Handlers inbound messages 
-        _room.OnMessage<string>("Restart",playerCharacter.GetComponent<InputController>().Restart);
+        _room.OnMessage<string>("Restart", playerCharacter.GetComponent<InputController>().Restart);
     }
 
     private void CreateEnemy(string key, Player player)
     {
-        var position = new Vector3(player.pX, player.pY, player.pZ);
+        //var position = new Vector3(player.pX, player.pY, player.pZ);
+        var position = RespawnController.Instance.GetRandomRespawnPoint();
 
         var enemy = Instantiate(_enemy, position, Quaternion.identity, _parentEnemy);
         enemy.Init(key, player);

@@ -24,6 +24,7 @@ public class InputController : MonoBehaviour
     private float _mouseSensetivity = 2f;
 
     private MultiplayerManager _multiplayerManager;
+    private RespawnController _respawnController;
     private bool _hold = false;
     private int _currentWeaponIndex = 0;
 
@@ -31,6 +32,7 @@ public class InputController : MonoBehaviour
     private void Start()
     {
         _multiplayerManager = MultiplayerManager.Instance;
+        _respawnController = RespawnController.Instance;
     }
     private void Update()
     {
@@ -151,33 +153,58 @@ public class InputController : MonoBehaviour
 
     public void Restart(string jsonRestartInfo)
     {
-        RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonRestartInfo);
+        StartCoroutine(HoldRoutine(jsonRestartInfo));
+    }
 
-        StartCoroutine(HoldRoutine());
+    //public void Restart(string jsonRestartInfo)
+    //{
+    //    RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonRestartInfo);
 
-        _player.transform.position = new Vector3(info.x, 0f, info.z);
+    //    StartCoroutine(HoldRoutine());
+
+    //    _player.transform.position = new Vector3(info.x, 0f, info.z);
+    //    _player.SetInput(0f, 0f, 0f);
+
+    //    var data = new Dictionary<string, object>()
+    //    {
+    //        {"pX",info.x },
+    //        {"pY",0f },
+    //        {"pZ",info.z },
+    //        {"vX",0f },
+    //        {"vY",0f },
+    //        {"vZ",0f },
+    //        {"rX",0f },
+    //        {"rY",0f }
+    //    };
+
+    //    _multiplayerManager.SendMessage("move", data);
+    //}
+
+    private IEnumerator HoldRoutine(string jsonInfo)
+    {
+
+        yield return new WaitForSecondsRealtime(_restartDelay);
+
+        //RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonInfo);
+
+        var respawnPosition = _respawnController.GetRandomRespawnPoint();
+
+        _player.transform.position = respawnPosition;
         _player.SetInput(0f, 0f, 0f);
 
         var data = new Dictionary<string, object>()
-        {
-            {"pX",info.x },
+           {
+            {"pX",respawnPosition.x },
             {"pY",0f },
-            {"pZ",info.z },
+            {"pZ",respawnPosition.z },
             {"vX",0f },
             {"vY",0f },
             {"vZ",0f },
             {"rX",0f },
             {"rY",0f }
-        };
+           };
 
         _multiplayerManager.SendMessage("move", data);
-    }
-
-    private IEnumerator HoldRoutine()
-    {
-        _hold = true;
-        yield return new WaitForSecondsRealtime(_restartDelay);
-        _hold = false;
     }
 }
 

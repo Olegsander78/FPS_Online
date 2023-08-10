@@ -102,7 +102,7 @@ public class EnemyController : MonoBehaviour
             switch (dataChange.Field)
             {
                 case "loss":
-                    MultiplayerManager.Instance.LossCounter.SetEnemyLoss((byte)dataChange.PreviousValue);
+                    MultiplayerManager.Instance.LossCounter.SetEnemyLoss((byte)dataChange.Value);
                     break;
                 case "currentHP":
                     if ((sbyte)dataChange.Value > (sbyte)dataChange.PreviousValue)
@@ -132,9 +132,6 @@ public class EnemyController : MonoBehaviour
                 case "rY":
                     _enemyCharacter.SetRotateY((float)dataChange.Value);
                     break;
-                //case "wType":
-                //    ChangeWeapon(GetWeaponInfo((int)dataChange.Value));
-                //    break;
                 default:
                     Debug.LogWarning("Не обрабатывается в Enemy изменение поля: " + dataChange.Field);
                     break;
@@ -144,20 +141,6 @@ public class EnemyController : MonoBehaviour
         _enemyCharacter.SetMovement(position, velocity, AverageInterval);
     }
 
-    private WeaponInfo GetWeaponInfo(int weaponIndex)
-    {
-        WeaponInfo weaponInfo = _weapons[0]?.GetComponent<WeaponInfo>();
-
-        foreach (var weapon in _weapons)
-        {
-            if (weapon == _weapons.ElementAtOrDefault(weaponIndex))
-            {               
-                weapon.TryGetComponent(out weaponInfo);
-            }
-        }
-
-        return weaponInfo;
-    }
     private void SaveReceiveTime()
     {
         var interval = Time.time - _lastReceiveTime;

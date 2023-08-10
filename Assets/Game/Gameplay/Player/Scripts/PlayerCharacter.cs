@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerCharacter : Character
 {
+    
     [SerializeField]
     private Health _health;
 
@@ -107,7 +108,7 @@ public class PlayerCharacter : Character
             switch (dataChange.Field)
             {
                 case "loss":
-                    MultiplayerManager.Instance.LossCounter.SetPlayerLoss((byte)dataChange.PreviousValue);
+                    MultiplayerManager.Instance.LossCounter.SetPlayerLoss((byte)dataChange.Value);
                     break;
                 case "currentHP":
                     _health.SetCurrent((sbyte)dataChange.Value);
