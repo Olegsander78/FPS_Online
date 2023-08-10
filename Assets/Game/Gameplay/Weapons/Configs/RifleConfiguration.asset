@@ -16,6 +16,6 @@ MonoBehaviour:
   WeaponType: 2
   PrefabWeapon: {fileID: 1583256060002875545, guid: e86b0698c9bdada4fb4d4797f543b2ae,
     type: 3}
-  BulletSpeed: 50
+  BulletSpeed: 60
   Damage: 5
   ShootDelay: 3

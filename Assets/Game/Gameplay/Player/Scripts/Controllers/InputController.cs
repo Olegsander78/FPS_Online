@@ -31,8 +31,6 @@ public class InputController : MonoBehaviour
     private void Start()
     {
         _multiplayerManager = MultiplayerManager.Instance;
-
-
     }
     private void Update()
     {
@@ -86,7 +84,18 @@ public class InputController : MonoBehaviour
         }
         DeselectWeapon(_currentWeaponIndex); 
         _currentWeaponIndex = weaponIndex; 
-        SelectWeapon(_currentWeaponIndex); 
+        SelectWeapon(_currentWeaponIndex);
+
+        var component = _weapons[_currentWeaponIndex].GetComponent<WeaponInfo>();
+
+        WeaponMetadata weaponMetadata = new()
+        {
+            key = _multiplayerManager.GetSessionID(),
+            id = component.WeaponID,
+            weaponType = component.WeaponType
+        };
+
+        SendWeaponType(ref weaponMetadata);
     }
 
     private void SelectWeapon(int weaponIndex)
@@ -94,16 +103,19 @@ public class InputController : MonoBehaviour
         _weapons[weaponIndex].SetActive(true);
 
         if (_weapons[weaponIndex].TryGetComponent(out WeaponInfo weaponInfo))
-            _gun.Init(weaponInfo);
-
-        Debug.Log($"Init weapon {weaponInfo.WeaponType}, {weaponInfo.WeaponID},{weaponInfo.Damage},{weaponInfo.BulletSpeed}");
-
-        //OnWeaponSelected?.Invoke(weaponIndex);
+            _gun.InitStats(weaponInfo);
     }
 
     private void DeselectWeapon(int weaponIndex)
     {
         _weapons[weaponIndex].SetActive(false);
+    }
+
+    private void SendWeaponType(ref WeaponMetadata weaponMetadata)
+    {
+        var json = JsonUtility.ToJson(weaponMetadata);
+
+        _multiplayerManager.SendMessage("weapon", json);
     }
 
     private void SendShoot(ref ShootInfo shootInfo)
@@ -186,5 +198,13 @@ public struct RestartInfo
 {
     public float x;
     public float z;
+}
+
+[Serializable]
+public struct WeaponMetadata
+{
+    public string key;
+    public string id;
+    public WeaponType weaponType;
 }
 

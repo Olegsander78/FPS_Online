@@ -1,5 +1,7 @@
 using Colyseus.Schema;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -30,6 +32,7 @@ public class EnemyController : MonoBehaviour
 
     private float _lastReceiveTime = 0f;
     private Player _player;
+    private int _currentWeaponIndex = 0;
 
     public void Init(string key, Player player)
     {
@@ -37,6 +40,15 @@ public class EnemyController : MonoBehaviour
         _player = player;
         _enemyCharacter.SetSpeed(player.speed);
         _enemyCharacter.SetMaxHP(player.maxHP);
+
+        _gun.InitStats(_weapons[_currentWeaponIndex]?.GetComponent<WeaponInfo>());
+        for (int i = 0; i < _weapons.Length; i++)
+        {
+            if (i == _currentWeaponIndex)
+                _weapons[i].SetActive(true);
+            else
+                _weapons[i].SetActive(false);
+        }
 
         player.OnChange += OnChange;
     }
@@ -48,6 +60,28 @@ public class EnemyController : MonoBehaviour
 
         _gun.Shoot(position, velocity);
     }
+
+    public void ChangeWeapon(WeaponMetadata weaponData)
+    {
+        WeaponInfo weaponInfo = _weapons[_currentWeaponIndex].GetComponent<WeaponInfo>();
+        _weapons[_currentWeaponIndex].SetActive(true);
+
+        for (int i = 0; i < _weapons.Length; i++)
+        {
+            if (_weapons[i]?.GetComponent<WeaponInfo>().WeaponType == weaponData.weaponType)
+            {
+                weaponInfo = _weapons[i].GetComponent<WeaponInfo>();
+                _weapons[i].SetActive(true);
+            }
+            else
+            {
+                _weapons[i].SetActive(false);
+            }
+        } 
+
+        _gun.InitStats(weaponInfo);
+    }
+
 
     public void Destroy()
     {
@@ -98,6 +132,9 @@ public class EnemyController : MonoBehaviour
                 case "rY":
                     _enemyCharacter.SetRotateY((float)dataChange.Value);
                     break;
+                //case "wType":
+                //    ChangeWeapon(GetWeaponInfo((int)dataChange.Value));
+                //    break;
                 default:
                     Debug.LogWarning("Не обрабатывается в Enemy изменение поля: " + dataChange.Field);
                     break;
@@ -107,6 +144,20 @@ public class EnemyController : MonoBehaviour
         _enemyCharacter.SetMovement(position, velocity, AverageInterval);
     }
 
+    private WeaponInfo GetWeaponInfo(int weaponIndex)
+    {
+        WeaponInfo weaponInfo = _weapons[0]?.GetComponent<WeaponInfo>();
+
+        foreach (var weapon in _weapons)
+        {
+            if (weapon == _weapons.ElementAtOrDefault(weaponIndex))
+            {               
+                weapon.TryGetComponent(out weaponInfo);
+            }
+        }
+
+        return weaponInfo;
+    }
     private void SaveReceiveTime()
     {
         var interval = Time.time - _lastReceiveTime;

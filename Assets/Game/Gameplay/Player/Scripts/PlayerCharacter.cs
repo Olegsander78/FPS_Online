@@ -14,9 +14,6 @@ public class PlayerCharacter : Character
     [SerializeField]
     private CheckFly _checkFly;
 
-    //[SerializeField]
-    //private float _speed = 2f;
-
     [SerializeField]
     private Transform _head;
 

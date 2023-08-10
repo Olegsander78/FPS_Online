@@ -57,6 +57,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
         //Handlers inbound messages 
         _room.OnMessage<string>("Shoot", ApllyShoot);
+        _room.OnMessage<string>("ChangeWeapon", ApllyChangeWeapon);
     }
 
     private void ApllyShoot(string jsonShootInfo)
@@ -70,6 +71,19 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
         }
 
         _enemies[shootInfo.key].Shoot(shootInfo);
+    }
+
+    private void ApllyChangeWeapon(string jsonWeaponMetadata)
+    {
+        var weaponData = JsonUtility.FromJson<WeaponMetadata>(jsonWeaponMetadata);
+
+        if (!_enemies.ContainsKey(weaponData.key))
+        {
+            Debug.LogError("Enemy tried to change weapon, bu enemy not found!");
+            return;
+        }
+
+        _enemies[weaponData.key].ChangeWeapon(weaponData);
     }
 
     private void OnChange(State state, bool isFirstState)
