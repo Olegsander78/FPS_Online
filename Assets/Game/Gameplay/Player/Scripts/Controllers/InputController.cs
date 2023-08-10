@@ -153,37 +153,19 @@ public class InputController : MonoBehaviour
 
     public void Restart(string jsonRestartInfo)
     {
+        //StartCoroutine(DisablePlayerForSeconds(_player.transform.parent.gameObject, 3f));
+
         StartCoroutine(HoldRoutine(jsonRestartInfo));
     }
-
-    //public void Restart(string jsonRestartInfo)
-    //{
-    //    RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonRestartInfo);
-
-    //    StartCoroutine(HoldRoutine());
-
-    //    _player.transform.position = new Vector3(info.x, 0f, info.z);
-    //    _player.SetInput(0f, 0f, 0f);
-
-    //    var data = new Dictionary<string, object>()
-    //    {
-    //        {"pX",info.x },
-    //        {"pY",0f },
-    //        {"pZ",info.z },
-    //        {"vX",0f },
-    //        {"vY",0f },
-    //        {"vZ",0f },
-    //        {"rX",0f },
-    //        {"rY",0f }
-    //    };
-
-    //    _multiplayerManager.SendMessage("move", data);
-    //}
-
-    private IEnumerator HoldRoutine(string jsonInfo)
+    private IEnumerator DisablePlayerForSeconds(GameObject player, float seconds)
     {
-
-        yield return new WaitForSecondsRealtime(_restartDelay);
+        player.SetActive(false);
+        yield return new WaitForSecondsRealtime(seconds);
+        player.SetActive(true);
+    }
+    private IEnumerator HoldRoutine(string jsonInfo)
+    {        
+        yield return new WaitForSecondsRealtime(_restartDelay);        
 
         //RestartInfo info = JsonUtility.FromJson<RestartInfo>(jsonInfo);
 
