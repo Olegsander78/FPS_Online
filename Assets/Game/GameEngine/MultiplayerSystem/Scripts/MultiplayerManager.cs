@@ -4,20 +4,17 @@ using UnityEngine;
 
 public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 {
-    [field: SerializeField]
-    public LossCounter LossCounter { get; private set; }
+    [field: SerializeField] public Skins Skins;    
+    [field: SerializeField] public LossCounter LossCounter { get; private set; }
+    [field: SerializeField] public SpawnPoints SpawnPoints { get; private set; }
     
-    [SerializeField]
-    private PlayerCharacter _player;
+    [SerializeField] private PlayerCharacter _player;
 
-    [SerializeField]
-    private Transform _parent;
+    [SerializeField] private Transform _parent;
 
-    [SerializeField]
-    private EnemyController _enemy;
+    [SerializeField] private EnemyController _enemy;
 
-    [SerializeField]
-    private Transform _parentEnemy;
+    [SerializeField] private Transform _parentEnemy;
 
     private ColyseusRoom<State> _room;
 
@@ -45,10 +42,20 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
     private async void Connect()
     {
+        SpawnPoints.GetPoint(Random.Range(0, SpawnPoints.Lenght)
+            , out Vector3 spawnPosition
+            , out Vector3 spawnRotation);
+        
         var data = new Dictionary<string, object>()
         {
+            {"skins",Skins.Lenght },
+            {"points", SpawnPoints.Lenght },
             {"speed", _player.Speed },
-            {"hp", _player.MaxHealth }
+            {"hp", _player.MaxHealth },
+            {"pX",spawnPosition.x },
+            {"pY",spawnPosition.y },
+            {"pZ",spawnPosition.z },
+            {"rY",spawnRotation.y }
         };
 
         _room = await Instance.client.JoinOrCreate<State>("state_handler", data);
@@ -92,12 +99,15 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
     private void CreatePlayer(Player player)
     {
         var position = new Vector3(player.pX, player.pY, player.pZ);
-        var playerCharacter = Instantiate(_player, position, Quaternion.identity, _parent);
+        Quaternion rotation = Quaternion.Euler(0f, player.rY, 0f);
+        var playerCharacter = Instantiate(_player, position, rotation, _parent);
 
         player.OnChange += playerCharacter.OnChange;
 
         //Handlers inbound messages 
-        _room.OnMessage<string>("Restart",playerCharacter.GetComponent<InputController>().Restart);
+        _room.OnMessage<int>("Restart",playerCharacter.GetComponent<InputController>().Restart);
+
+        playerCharacter.GetComponent<SetSkin>().Set(Skins.GetMaterial(player.skin));
     }
 
     private void CreateEnemy(string key, Player player)
@@ -106,6 +116,7 @@ public class MultiplayerManager : ColyseusManager<MultiplayerManager>
 
         var enemy = Instantiate(_enemy, position, Quaternion.identity, _parentEnemy);
         enemy.Init(key, player);
+        enemy.GetComponent<SetSkin>().Set(Skins.GetMaterial(player.skin));
 
         _enemies.Add(key, enemy);
     }

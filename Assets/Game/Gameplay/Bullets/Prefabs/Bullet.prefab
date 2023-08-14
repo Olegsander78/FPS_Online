@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5777337181214964088}
   - component: {fileID: 5777337181214964089}
   - component: {fileID: 5777337181214964090}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,6 +64,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 5777337181214964089}
+  _lifeTime: 5
 --- !u!1 &5777337181710322830
 GameObject:
   m_ObjectHideFlags: 0
@@ -73,7 +74,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5777337181710322829}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: '[VISUAL]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5777337181936019275}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +141,7 @@ GameObject:
   - component: {fileID: 5777337182448532248}
   - component: {fileID: 5777337182448532254}
   - component: {fileID: 5777337182448532255}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +223,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5777337182911724723}
   - component: {fileID: 5777337182911724722}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -362,7 +363,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5777337183039561570}
   - component: {fileID: 5777337183039561569}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: '[PHYSICS]'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
