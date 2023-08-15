@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField]
-    private Rigidbody _rigidbody;
+    private const float HEAD_HEIGHT = 0.6f;
 
-    [SerializeField]
-    private float _lifeTime = 5f;
+    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private float _lifeTime = 5f;
+    [SerializeField] private int _critDamageMultiplier = 3;
 
     private int _damage;
 
@@ -35,13 +35,27 @@ public class Bullet : MonoBehaviour
         if (collision.collider.GetComponentInChildren<EnemyCharacter>() != null)
         {
             var enemy = collision.collider.GetComponentInChildren<EnemyCharacter>();
-            enemy.ApllyDamage(_damage);
-        }
 
-        //    if (collision.collider.TryGetComponent(out EnemyCharacter enemy))
-        //{
-        //    enemy.ApllyDamage(_damage);
-        //}
+            CapsuleCollider enemyCollider = collision.collider.GetComponentInChildren<CapsuleCollider>();
+
+            if (enemyCollider != null)
+            {
+                Vector3 hitPosition = enemyCollider.transform.InverseTransformPoint(collision.contacts[0].point);
+
+                var height = enemyCollider.height;
+
+                var headHeight = height - HEAD_HEIGHT;
+
+                if (hitPosition.y >= headHeight)
+                {
+                    enemy.ApllyDamage(_damage * _critDamageMultiplier);
+                }
+                else
+                {
+                    enemy.ApllyDamage(_damage);
+                }
+            }
+        }
 
         Destroy();
     }
