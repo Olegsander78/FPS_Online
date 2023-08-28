@@ -1,4 +1,4 @@
-# FPS. Multiplayer framework Colyseus. 
+# FPS. Unity Multiplayer Game. Framework Colyseus. 
 Учебный проект с курса Eccentric games по мультиплееру.
 
 ![изображение](https://github.com/Olegsander78/Shooter_MP/assets/79563332/e30e9895-5b2d-47f9-801a-d81e40f7e70a)
